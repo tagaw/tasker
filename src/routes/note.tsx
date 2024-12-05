@@ -67,8 +67,8 @@ export default function Note() {
                 </div>
 
                 <div className="w-full overflow-y-auto bg-inherit">
-                    <div className="pb-6 my-6 break-words text-wrap">
-                        <p className="w-4/5 mx-auto text-lg">{note.content}</p>
+                    <div className="pb-6 my-6 break-words whitespace-pre text-wrap">
+                        <p className="p-2 w-4/5 mx-auto text-lg">{note.content}</p>
                     </div>
                 </div>
             </div>
