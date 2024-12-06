@@ -3,6 +3,7 @@ import Root,{loader as RootLoader, action as RootAction} from './routes/root';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Note, {loader as NoteLoader, action as PinAction} from './routes/note';
 import EditNote, {action as EditAction} from './routes/edit';
+import {action as DestroyAction} from './routes/delete';
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
                   element: <EditNote/>,
                   loader: NoteLoader,
                   action: EditAction
+                },
+                {
+                  path: ':id/destroy',
+                  action: DestroyAction
                 }
               ]
             }

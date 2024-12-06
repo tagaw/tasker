@@ -58,6 +58,20 @@ export default function Note() {
                             <Form action="edit" >
                                 <button type='submit' className="absolute top-0 right-0 h-8 m-4 text-center border border-black rounded-lg w-14">EDIT</button>
                             </Form>
+                            
+                            {/* DELETE BUTTON */}
+                            { 
+                            !note.pinned &&
+                            <Form method="post" action='destroy' onSubmit={(event) => {
+                                if (!confirm("Confirm if you want to delete the note. This action CAN NOT be undone!")) {
+                                    event.preventDefault();
+                                }
+                            }}>
+                            
+                                <button type='submit' className="absolute top-0 w-20 h-8 m-4 text-center text-red-700 bg-red-700 border border-red-700 rounded-lg right-16 bg-opacity-20">DELETE</button>
+                            </Form>
+                            }
+                            
                             {/* EDIT DATE */}
                             <p className="absolute bottom-0 w-full px-4 text-right">
                                 Last Edited: {createDateString(note.dateEdited)}
@@ -68,7 +82,7 @@ export default function Note() {
 
                 <div className="w-full overflow-y-auto bg-inherit">
                     <div className="pb-6 my-6 break-words whitespace-pre text-wrap">
-                        <p className="p-2 w-4/5 mx-auto text-lg">{note.content}</p>
+                        <p className="w-4/5 p-2 mx-auto text-lg">{note.content}</p>
                     </div>
                 </div>
             </div>

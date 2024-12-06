@@ -177,7 +177,7 @@ export async function getNavData(query: string | null) {
 }
 
 
-export async function newNote() {
+export async function newNote(num?:number) {
     const current_time = new Date();
     
     let [storedData, noteArr] = await getCurrentNotes(current_time);
@@ -187,7 +187,7 @@ export async function newNote() {
         dateCreated: current_time,
         dateEdited: current_time,
         pinned: false,
-        title: "",
+        title: `Note ${num}`,
         content: "" 
     };
 
@@ -229,4 +229,34 @@ export async function updateNote(id:string, update: EditNote | NoteObj) {
 
     await localforage.setItem('StoredNotes',storedData);
     return note;
+}
+
+export async function deleteNote(id:string) {
+    const storage = await getStorage();
+    
+    const [year,month,date,_] = id.split('-');
+
+    let notes = storage.STORAGE[year][month][date];
+
+    const idx = notes.findIndex(note => note.id === id);
+
+    notes.splice(idx,1);
+
+    if (notes.length === 0) {
+        delete storage.STORAGE[year][month][date];
+    }
+
+    if (Object.keys(storage.STORAGE[year][month]).length === 0) {
+        delete storage.STORAGE[year][month];
+    }
+
+    if (Object.keys(storage.STORAGE[year]).length === 0) {
+        delete storage.STORAGE[year];
+    }
+
+    storage.LAST_EDIT = new Date();
+    
+    await localforage.setItem('StoredNotes',storage);
+
+    return;    
 }
