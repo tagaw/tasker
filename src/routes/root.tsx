@@ -1,4 +1,4 @@
-import { Form, Outlet, redirect, useLoaderData, useLocation } from "react-router-dom";
+import { ActionFunction, ActionFunctionArgs, Form, Outlet, redirect, useLoaderData, useLocation } from "react-router-dom";
 import Dropdown from "../components/Dropdown";
 import { getNavData, newNote, NoteObj } from "../Note";
 import { matchSorter } from "match-sorter";
@@ -13,15 +13,18 @@ export async function loader({ request } : {request : Request}) {
     return [pinned,notes];
 }
 
-export const action = async () => {
-    const note = await newNote();
+export const action: ActionFunction = async ({request} : ActionFunctionArgs) => {
+    const formData = Object.fromEntries(await request.formData());
+    
+    const note = await newNote(Number(formData.noteNumber as String));
+    
     const [year,month, date, id] = note.id.split('-');
     return redirect(`/${year}/${month}/${date}/${id}/edit`);
 } 
 
 function Root() {
     const [pinned,notes] = useLoaderData() as [NoteObj[],NoteObj[]];
-
+    const [noteNum, setNoteNum] = useState(pinned.length + notes.length);
     return (
         <>
             <div className="flex flex-row w-full h-full max-w-full overflow-hidden">
@@ -38,11 +41,14 @@ function Root() {
                             name="query"/>
                         </Form>
                     
-                        <Form method="post" className="flex justify-center">
+                        <Form method="post" className="flex justify-center" onSubmit={() => {
+                            setNoteNum(noteNum+1);
+                        }}>
                             <button className="w-8 h-6 bg-black border-2 border-gray-600 rounded-lg bg-opacity-15" type="submit">
                                 {/* Plus icon */}
                                 <svg className="w-4 h-4 mx-auto fill-gray-800" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 144L48 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l144 0 0 144c0 17.7 14.3 32 32 32s32-14.3 32-32l0-144 144 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-144 0 0-144z"/></svg>
                             </button>
+                            <input name="noteNumber" value={noteNum+1} className="hidden"/>
                         </Form>
             
                     </div>
